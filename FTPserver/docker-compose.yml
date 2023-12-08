@@ -1,20 +1,18 @@
-version: '2'
-
+---
+version: "2.1"
 services:
-  ftp_server:
-    image: stilliard/pure-ftpd:hardened
-    container_name: pure-ftpd
-    ports:
-      - "21:21"
-      - "30000-30009:30000-30009"
-    volumes:
-      - "./data:/home/username/"
-      - "./passwd:/etc/pure-ftpd/passwd"
+  filezilla:
+    image: lscr.io/linuxserver/filezilla:latest
+    container_name: filezilla
+    security_opt:
+      - seccomp:unconfined #optional
     environment:
-      PUBLICHOST : "localhost"
-      FTP_USER_NAME: username
-      FTP_USER_PASS: mypass
-      FTP_USER_HOME: /home/username
-      #ADDED_FLAGS: ""
-    restart: always 
-    ###
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/config:/config
+    ports:
+      - 3000:3000
+      - 3001:3001
+    restart: unless-stopped
